@@ -1,7 +1,5 @@
-import { wxLogin } from '@/mixins/authorization'
 export default async (url, params, method) => {
   return new Promise((resolve, reject) => {
-    const community_id = wx.getStorageSync('community_id') || ''
     wx.request({
       url: url,
       method: method || 'GET',
