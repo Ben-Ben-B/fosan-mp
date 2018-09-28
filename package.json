@@ -2,7 +2,7 @@
   "name": "fosan",
   "version": "1.0.0",
   "description": "A Mpvue project",
-  "author": "陈成龙 <chenchenglong@3ekeji.cn>",
+  "author": "Ben",
   "private": true,
   "scripts": {
     "dev": "node build/dev-server.js",
