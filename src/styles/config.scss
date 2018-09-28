@@ -1,0 +1,168 @@
+$theme-black:      #1C1C2F;  // 主题黑
+$theme-gray:       #AEAEBD;  // 主题灰
+$theme-red:        #E81515;  // 主题红
+$theme-orange:     #FF9F00;  // 主题橙
+
+$theme-bgc-black:  #303135; // 背景黑
+$theme-bgc-gray:   #C5C5CB; // 背景灰
+$theme-bgc-red:    #EF4C4C; // 背景红
+$theme-bgc-orange: #FF9F00; // 背景绿
+$theme-bgc-green:  #7ED321; // 背景橙
+
+$page-bgc-gray:    #F1F1F7; // 页面的灰色背景
+$theme-btn-gray:   #C5C5CB; // 按钮灰
+// 颜色变量
+$white: #fff;
+$border-color: #e2e2e2;
+$green: #00BAA0;
+$gray: #D8D8D8;
+$tipgray: #ABB0AF;
+$red: #FF787F;
+$gary-font: #adb2b2;
+$detail: #898989;
+$no-msg: #ADB2B2;
+$arrow-color: #AEC4C2;
+$call-color: rgba(0, 187, 165, 0.3);
+$bt-color: #00c3af;
+$price-red:#F45519;
+$brown: #4e4d4c;
+$title: #888888;
+$title-border:#00BFA6;
+$sub-title:#A4A4A4;
+// 默认字体色
+$default-font:#152D2A;
+$bac-color: #F7F7F7;            //背景颜色
+html, body, #app{
+  width: 100%;
+  height: 100%;
+  font-family: 'PingFangSC-Medium';
+}
+view {
+  display: block;
+  font-size: 28rpx;
+  vertical-align: top;
+  font-family: 'PingFangSC-Regular';
+  color: $theme-black;
+}
+page {
+  position: relative;
+  background: #EFEFF4;;
+  min-height: 100%;
+  color: $theme-black;
+}
+image {
+  display: inline-block;
+  vertical-align: middle;
+}
+.container{
+  min-height: 100%;
+  box-sizing: border-box;
+  background: $bac-color;
+}
+.v-m{
+  vertical-align: middle;
+}
+.no-data{
+  text-align: center;
+}
+.no-data image{
+  width:300rpx;
+  margin-top: 120rpx;
+}
+.font-medium{
+  font-family: 'PingFangSC-Medium';
+}
+.fz28{
+  font-size: 28rpx;
+}
+.fz34{
+  font-size: 34rpx;
+}
+.iphone-height{
+    width: 100vw !important;
+    height: 70rpx !important;
+}
+// 宽高
+@mixin wh($width, $height) {
+    width: $width;
+    height: $height;
+}
+
+//背景
+@mixin bg-image($url) {
+    background-image: url($url + "@2x.png");
+    @media (-webkit-min-device-pixel-ratio: 3), (min-device-pixel-ratio: 3) {
+        background-image: url($url + "@3x.png");
+    }
+}
+
+//取消边框
+@mixin border-none() {
+    &:after {
+        display: none
+    }
+}
+
+//定位上下左右居中
+@mixin center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+//定位上下居中
+@mixin ct {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+//定位左右居中
+@mixin cl {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+//字体大小、行高、字体
+@mixin font($size, $line-height, $family: 'PingFangSC-Regular') {
+    font: #{$size}/#{$line-height} $family;
+}
+
+@mixin ct-image($url) {
+    content: url($url + "@2x.png");
+    @media (-webkit-min-device-pixel-ratio: 3), (min-device-pixel-ratio: 3) {
+        content: url($url + "@3x.png");
+    }
+    width: 1rem;
+    height: 1rem;
+}
+
+
+//一像素边框处理
+@mixin border-1px($color) {
+    position: relative;
+    &:after {
+        display: block;
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        height: 1px;
+        background-image: linear-gradient(0deg, transparent 50%, #e2e2e2 50%);
+        content: ' ';
+    }
+}
+
+//高、行高
+@mixin hl($height, $line-height) {
+    height: $height;
+    line-height: $line-height;
+}
+
+//字体大小，颜色
+@mixin sc($size, $color) {
+    font-size: $size;
+    color: $color;
+}
