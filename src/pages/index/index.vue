@@ -19,6 +19,7 @@
 </template>
 
 <script>
+import { login } from '@/service/index'
 export default {
   data() {
     return {
@@ -30,11 +31,30 @@ export default {
   onShow: function() {
   },
   methods: {
+    showError(title){
+      wx.showToast({ title, icon: 'none', duration: 1000 })
+    },
     onGotUserInfo(e){
        let nickName = e.mp.detail.userInfo.nickName
-       if(nickName){   
-         wx.setStorageSync('createTime',+new Date())
-         wx.navigateTo({url:'/pages/logs/index'})
+       if(!this.name){
+         this.showError('请填写账号')
+         return
+       }
+       if(!this.passworld){
+         this.showError('请填写密码')
+         return
+       }
+       if(nickName){ 
+         login({name:this.name,passworld:this.passworld}).then(res=>{
+           console.log(res.msg)
+           if(res.code===0){
+            //  wx.setStorageSync('createTime',+new Date())
+            //  wx.navigateTo({url:'/pages/logs/index'})
+           }else{
+            //  this.showError(res.msg)
+           }
+         })
+         
        }else{
          wx.showToast({
             title: '请先授权',

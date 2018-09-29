@@ -10,6 +10,10 @@ export default async (url, params, method) => {
       },
       success: (response) => {
         const data = response.data
+        if (data.code === 120001 || data.code === 120006) {
+          wx.clearStorage()
+          wx.reLaunch({url:'/pages/index/index'})
+        } 
         resolve(data)
 
       },
