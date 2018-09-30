@@ -13,7 +13,7 @@
           <button open-type="getUserInfo" lang="zh_CN" size="32rpx" class="next-button" :class="name&&password? 'allow-btn':''" @getuserinfo="onGotUserInfo">授权登录</button>
         </view>
       </form>
-      <div>此数据仅供学习使用，不能用作其他用途，后果自负，初始账号为<span class="text-world">Ben</span>,密码为<span class="text-world">123456</span>，如果不正确，请联系管理员，谢谢</div>
+      <div>此数据仅供学习使用，不能用作其他用途，初始账号为<span class="text-world">admin</span>,密码为<span class="text-world">123456</span>，如果不正确，请联系管理员，谢谢</div>
     </div>
   </div>
 </template>
@@ -45,13 +45,15 @@ export default {
          return
        }
        if(nickName){ 
+         wx.showLoading({ title: '加载中' })
          login({name:this.name,password:this.password}).then(res=>{
+           wx.hideLoading()
            console.log(res,e.mp.detail)
            if(res.code===0){
              wx.setStorageSync('createTime',+new Date())
              wx.setStorageSync('permissions',res.data.permissions)
              wx.setStorageSync('token',res.data.token)
-             wx.navigateTo({url:'/pages/logs/index'})
+             wx.redirectTo({url:'/pages/logs/index'})
            }else{
              this.showError(res.msg)
            }

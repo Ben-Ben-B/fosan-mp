@@ -7,6 +7,9 @@
                    <span class="house-text">{{!genderName?'性别':genderName}}</span>
                   </picker>
               </span>
+             <span>
+                   <span class="house-text" @click="reset">重置搜索</span>
+              </span>
               <span>
                   <picker mode='multiSelector' @change="ageChange" :value="ageIndex" :range="ageList" class="header-text">
                    {{!age?'年龄段':age}}
@@ -14,6 +17,10 @@
               </span>
           </div>
     </div>
+    <div class="re-nodata" v-if="noMore&&!list.length">
+      <image src="/static/images/no-data.png" class="repair-nodata"></image>
+      <div>暂无数据</div>
+     </div>
     <div class="list" v-for="item in list" :key="item.id">
       <div @click="previewImage(item.photo,list)" class="photo">
         <image :src="item.photo"></image>
@@ -31,395 +38,33 @@
         </div>
       </div>
     </div>
+    <div class="loading gary-font" v-if="noMore&&!!list.length">已全部加载</div>
+    <div class="loading" v-if="loading">加载中...</div>
   </div>
 </template>
 
 <script>
-import {deepcopy} from '@/config/utils'
+import { getDataList } from '@/service/index'
 export default {
   data () {
     return {
+      total:0,
       ageList:[],
       ageIndex:[0,0],
       age:'',
       genderList:['全部','女','男'],
-      gender:'',
+      gender:0,
+      page:1,
+      size:10,
+      startTime:'',
+      endTime:'',
       genderName:'',
-      list:[
-             {
-             education: "大专",
-             reviewed_by: "fsfxzj",
-             gender: "0",
-             mail: "191287675@qq.com",
-             batch_number: "013",
-             audit_date: "2018-05-31",
-             auditing: "2",
-             identity_card: "440681199605160028",
-             positive_photo: "http://image.kamfat.net/house/upload/image/Common/20180507/ChenMeiXin.JPG_V259.jpg",
-             score: "0",
-             opposite_photo: "http://image.kamfat.net/house/upload/image/Common/20180507/ChenMeiXin2.JPG_PMF7.jpg",
-             id: "3955",
-             is_print: "2",
-             archives_date: "2018-05-31 16:41:20",
-             grade_date: "NULL",
-             qq: "NULL",
-             gradeName: "暂无数据",
-             suggestion: "NULL",
-             mobile: "15015527868",
-             photo: "http://image.kamfat.net/house/upload/image/Common/20180511/ChenMeiXin3.JPG_6ZCU.jpg",
-             grade_by: "NULL",
-             webchart: "NULL",
-             personnel_name: "陈美欣",
-             organization_name: "佛山市名策房地产顾问有限公司",
-             genderName: "女",
-             is_show: "1",
-             applicant: "陈美欣",
-             personnel_sn: "SFX002692",
-             user_id: "5286",
-             organization_id: "737",
-             grade: "NULL",
-             application_date: "2018-05-07",
-             is_dimission: "2",
-             reviewed_date: "2018-05-31 16:41:20",
-             new_items: "NULL"
-             },
-             {
-             education: "高中",
-             reviewed_by: "fsfxzj",
-             gender: "0",
-             mail: "929761348@qq.com",
-             batch_number: "乐有家2018.5.15-16",
-             audit_date: "2018-05-31",
-             auditing: "2",
-             identity_card: "441882199612245749",
-             positive_photo: "http://image.kamfat.net/house/upload/image/Common/20180426/WeiXinTuPian_20180426155327.JPG_VT3A.jpg",
-             score: "0",
-             opposite_photo: "http://image.kamfat.net/house/upload/image/Common/20180426/WeiXinTuPian_20180426155337.JPG_C59S.jpg",
-             id: "3852",
-             is_print: "2",
-             archives_date: "2018-05-31 17:34:04",
-             grade_date: "NULL",
-             qq: "929761348",
-             gradeName: "暂无数据",
-             suggestion: "批量审核通过",
-             mobile: "15816201273",
-             photo: "http://image.kamfat.net/house/upload/image/Common/20180426/LeLiaoTuPian20180426154723.PNG_XP4W.png",
-             grade_by: "NULL",
-             webchart: "NULL",
-             personnel_name: "邓爱珍",
-             organization_name: "佛山市乐有家房产经纪有限公司",
-             genderName: "女",
-             is_show: "1",
-             applicant: "邓爱珍",
-             personnel_sn: "SFX002813",
-             user_id: "5160",
-             organization_id: "111",
-             grade: "NULL",
-             application_date: "2018-04-26",
-             is_dimission: "2",
-             reviewed_date: "2018-05-31 17:34:04",
-             new_items: "NULL"
-             },
-             {
-             education: "中专",
-             reviewed_by: "fsfxzj",
-             gender: "0",
-             mail: "835493372@qq.com",
-             batch_number: "012",
-             audit_date: "2018-05-31",
-             auditing: "2",
-             identity_card: "440881199603116120",
-             positive_photo: "http://image.kamfat.net/house/upload/image/Common/20180428/WEIXINTUPIAN_20180417223749.JPG_EPMY.JPG_FS9D.jpg",
-             score: "0",
-             opposite_photo: "http://image.kamfat.net/house/upload/image/Common/20180428/WEIXINTUPIAN_20180417223801.JPG_E8G2.JPG_SJMA.jpg",
-             id: "3741",
-             is_print: "2",
-             archives_date: "2018-05-31 16:00:45",
-             grade_date: "NULL",
-             qq: "NULL",
-             gradeName: "暂无数据",
-             suggestion: "NULL",
-             mobile: "13246546609",
-             photo: "http://image.kamfat.net/house/upload/image/Common/20180428/WeiXinTuPian_20180428161739.PNG_X98J.png",
-             grade_by: "NULL",
-             webchart: "NULL",
-             personnel_name: "阮月花",
-             organization_name: "佛山市和记裕丰房地产代理有限公司",
-             genderName: "女",
-             is_show: "1",
-             applicant: "阮月花",
-             personnel_sn: "SFX002634",
-             user_id: "4849",
-             organization_id: "713",
-             grade: "NULL",
-             application_date: "2018-04-17",
-             is_dimission: "2",
-             reviewed_date: "2018-05-31 16:00:45",
-             new_items: "NULL"
-             },
-             {
-             education: "中专",
-             reviewed_by: "fsfxzj",
-             gender: "0",
-             mail: "2206722911@qq.com",
-             batch_number: "乐有家2018.4.12",
-             audit_date: "2018-04-17",
-             auditing: "2",
-             identity_card: "441823199603100441",
-             positive_photo: "http://image.kamfat.net/house/upload/image/Common/20180328/WeiXinTuPian_20180328181206.PNG_QC5W.png",
-             score: "0",
-             opposite_photo: "http://image.kamfat.net/house/upload/image/Common/20180328/WeiXinTuPian_20180328181220.PNG_T8D5.png",
-             id: "3529",
-             is_print: "2",
-             archives_date: "2018-04-17 11:35:17",
-             grade_date: "NULL",
-             qq: "2206722911",
-             gradeName: "暂无数据",
-             suggestion: "批量审核通过",
-             mobile: "13612577750",
-             photo: "http://image.kamfat.net/house/upload/image/Common/20180327/WeiXinTuPian_20180327182939_FuBen.JPG_HQWK.jpg",
-             grade_by: "NULL",
-             webchart: "LYR2206722911",
-             personnel_name: "李燕容",
-             organization_name: "佛山市乐有家房产经纪有限公司",
-             genderName: "女",
-             is_show: "1",
-             applicant: "李燕容",
-             personnel_sn: "SFX002129",
-             user_id: "4739",
-             organization_id: "111",
-             grade: "NULL",
-             application_date: "2018-03-27",
-             is_dimission: "2",
-             reviewed_date: "2018-04-17 11:35:17",
-             new_items: "NULL"
-             },
-             {
-             education: "高中",
-             reviewed_by: "fsfxzj",
-             gender: "0",
-             mail: "1902069783@qq.com",
-             batch_number: "补2018.6.6",
-             audit_date: "2018-05-07",
-             auditing: "2",
-             identity_card: "362426199611028441",
-             positive_photo: "http://image.kamfat.net/house/upload/image/Common/20180328/1.JPG_L7HU.jpg",
-             score: "0",
-             opposite_photo: "http://image.kamfat.net/house/upload/image/Common/20180328/XIAO.JPG_KGBQ.jpg",
-             id: "3534",
-             is_print: "2",
-             archives_date: "2018-05-07 10:51:19",
-             grade_date: "NULL",
-             qq: "NULL",
-             gradeName: "暂无数据",
-             suggestion: "NULL",
-             mobile: "15718403034",
-             photo: "http://image.kamfat.net/house/upload/image/Common/20180507/WeiXinTuPian_20180507104001.PNG_K524.png",
-             grade_by: "NULL",
-             webchart: "NULL",
-             personnel_name: "宋倩",
-             organization_name: "佛山市合富置业房地产顾问有限公司",
-             genderName: "女",
-             is_show: "1",
-             applicant: "宋倩",
-             personnel_sn: "SFX002527",
-             user_id: "4724",
-             organization_id: "32",
-             grade: "NULL",
-             application_date: "2018-03-27",
-             is_dimission: "2",
-             reviewed_date: "2018-05-07 10:51:19",
-             new_items: "NULL"
-             },
-             {
-             education: "高中",
-             reviewed_by: "fsfxzj",
-             gender: "0",
-             mail: "476630125@QQ.COM",
-             batch_number: "乐有家2018.5.15-16",
-             audit_date: "2018-05-31",
-             auditing: "2",
-             identity_card: "440923199609164440",
-             positive_photo: "http://image.kamfat.net/house/upload/image/Common/20180326/WeiXinTuPian_20180326174805_FuBen.JPG_BYMZ.jpg",
-             score: "0",
-             opposite_photo: "http://image.kamfat.net/house/upload/image/Common/20180326/WeiXinTuPian_20180326174811_FuBen.JPG_CBPL.jpg",
-             id: "3500",
-             is_print: "2",
-             archives_date: "2018-05-31 17:37:30",
-             grade_date: "NULL",
-             qq: "476630125",
-             gradeName: "暂无数据",
-             suggestion: "批量审核通过",
-             mobile: "13425631570",
-             photo: "http://image.kamfat.net/house/upload/image/Common/20180326/WeiXinTuPian_20180326174759_FuBen.JPG_5SPI.jpg",
-             grade_by: "NULL",
-             webchart: "13425631570",
-             personnel_name: "蔡海珠",
-             organization_name: "佛山市乐有家房产经纪有限公司",
-             genderName: "女",
-             is_show: "1",
-             applicant: "蔡海珠",
-             personnel_sn: "SFX002832",
-             user_id: "4702",
-             organization_id: "111",
-             grade: "NULL",
-             application_date: "2018-03-25",
-             is_dimission: "2",
-             reviewed_date: "2018-05-31 17:37:30",
-             new_items: "NULL"
-             },
-             {
-             education: "大专",
-             reviewed_by: "fsfxzj",
-             gender: "0",
-             mail: "1162459741@qq.com",
-             batch_number: "012",
-             audit_date: "2018-05-31",
-             auditing: "2",
-             identity_card: "441224199609241425",
-             positive_photo: "http://image.kamfat.net/house/upload/image/Common/20180313/WeiXinTuPian_20180313094658.JPG_HJKD.jpg",
-             score: "0",
-             opposite_photo: "http://image.kamfat.net/house/upload/image/Common/20180313/WeiXinTuPian_20180313094708.JPG_HOT8.jpg",
-             id: "3397",
-             is_print: "2",
-             archives_date: "2018-05-31 15:42:28",
-             grade_date: "NULL",
-             qq: "NULL",
-             gradeName: "暂无数据",
-             suggestion: "NULL",
-             mobile: "13660978815",
-             photo: "http://image.kamfat.net/house/upload/image/Common/20180313/JiHongMei.JPG_4K6P.jpg",
-             grade_by: "NULL",
-             webchart: "NULL",
-             personnel_name: "纪红梅",
-             organization_name: "佛山市昇盈房地产中介有限公司",
-             genderName: "女",
-             is_show: "1",
-             applicant: "纪红梅",
-             personnel_sn: "SFX002585",
-             user_id: "4578",
-             organization_id: "807",
-             grade: "NULL",
-             application_date: "2018-03-13",
-             is_dimission: "2",
-             reviewed_date: "2018-05-31 15:42:28",
-             new_items: "NULL"
-             },
-             {
-             education: "职中",
-             reviewed_by: "fsfxzj",
-             gender: "0",
-             mail: "928289063@qq.com",
-             batch_number: "补2018.4.28",
-             audit_date: "2018-05-02",
-             auditing: "2",
-             identity_card: "441223199611182026",
-             positive_photo: "http://image.kamfat.net/house/upload/image/Common/20180107/WeiXinTuPian_20180107120403.JPG_ZTAO.jpg",
-             score: "0",
-             opposite_photo: "http://image.kamfat.net/house/upload/image/Common/20180107/WeiXinTuPian_20180107120359 - FuBen.JPG_WJBU.jpg",
-             id: "3298",
-             is_print: "2",
-             archives_date: "2018-05-02 15:05:33",
-             grade_date: "NULL",
-             qq: "NULL",
-             gradeName: "暂无数据",
-             suggestion: "NULL",
-             mobile: "13144707317",
-             photo: "http://image.kamfat.net/house/upload/image/Common/20180427/WeiXinTuPian_20180427162533_KanTuWang.JPG_4UX7.jpg",
-             grade_by: "NULL",
-             webchart: "NULL",
-             personnel_name: "杨玉婷",
-             organization_name: "佛山市万众置业有限公司",
-             genderName: "女",
-             is_show: "1",
-             applicant: "杨玉婷",
-             personnel_sn: "SFX002408",
-             user_id: "4370",
-             organization_id: "202",
-             grade: "NULL",
-             application_date: "2018-01-07",
-             is_dimission: "2",
-             reviewed_date: "2018-05-02 15:05:33",
-             new_items: "NULL"
-             },
-             {
-             education: "自考大专",
-             reviewed_by: "fsfxzj",
-             gender: "0",
-             mail: "269292818@qq.com",
-             batch_number: "乐有家18.12",
-             audit_date: "2018-01-23",
-             auditing: "2",
-             identity_card: "441226199606034044",
-             positive_photo: "http://image.kamfat.net/house/upload/image/Common/20171221/ZHENG.PNG_7O8X.png",
-             score: "0",
-             opposite_photo: "http://image.kamfat.net/house/upload/image/Common/20171221/BEI.PNG_2VC6.png",
-             id: "3219",
-             is_print: "2",
-             archives_date: "2018-01-23 11:34:47",
-             grade_date: "NULL",
-             qq: "26292818",
-             gradeName: "暂无数据",
-             suggestion: "NULL",
-             mobile: "18824842930",
-             photo: "http://image.kamfat.net/house/upload/image/Common/20171221/8.JPG_5PLS.jpg",
-             grade_by: "NULL",
-             webchart: "18824842930",
-             personnel_name: "蔡嘉怡",
-             organization_name: "佛山市乐有家房产经纪有限公司",
-             genderName: "女",
-             is_show: "1",
-             applicant: "蔡嘉怡",
-             personnel_sn: "SFX001279",
-             user_id: "1161",
-             organization_id: "111",
-             grade: "NULL",
-             application_date: "2017-12-21",
-             is_dimission: "2",
-             reviewed_date: "2018-01-23 11:34:47",
-             new_items: "NULL"
-             },
-             {
-             education: "中专",
-             reviewed_by: "fsfxzj",
-             gender: "0",
-             mail: "1287840550@qq.com",
-             batch_number: "补2018.4.28",
-             audit_date: "2018-05-02",
-             auditing: "2",
-             identity_card: "441223199605141121",
-             positive_photo: "http://image.kamfat.net/house/upload/image/Common/20171215/AA.JPG_FI7K.jpg",
-             score: "0",
-             opposite_photo: "http://image.kamfat.net/house/upload/image/Common/20171215/BB.JPG_GFKI.jpg",
-             id: "3145",
-             is_print: "2",
-             archives_date: "2018-05-02 15:05:26",
-             grade_date: "NULL",
-             qq: "NULL",
-             gradeName: "暂无数据",
-             suggestion: "NULL",
-             mobile: "13288298895",
-             photo: "http://image.kamfat.net/house/upload/image/Common/20180427/WeiXinTuPian_20180427170842.PNG_WULB.png",
-             grade_by: "NULL",
-             webchart: "NULL",
-             personnel_name: "钱楚晴",
-             organization_name: "佛山市万众置业有限公司",
-             genderName: "女",
-             is_show: "1",
-             applicant: "钱楚晴",
-             personnel_sn: "SFX002407",
-             user_id: "4198",
-             organization_id: "202",
-             grade: "NULL",
-             application_date: "2017-12-15",
-             is_dimission: "2",
-             reviewed_date: "2018-05-02 15:05:26",
-             new_items: "NULL"
-             }
-      ]   
+      loading: false,
+      noMore: false,
+      list:[]  
     }
   },
-  onShow () {
+  mounted () {
       let age = 1980
       let arr = []
     for(let i=0;i<30;i++){
@@ -427,10 +72,72 @@ export default {
     }
     this.ageList[0] = arr
     this.ageList[1] = arr
+    this.getData()
+  },
+  onReachBottom(){
+    this.getNextPageData()
   },
   methods: {
+    reset(){
+      this.page = 1
+      this.age = ''
+      this.genderName = ''
+      this.startTime = ''
+      this.endTime = ''
+      this.gender = ''
+      this.getData()
+    },
+    getNextPageData(){
+      if (this.loading) {
+        return
+      }
+      if (this.noMore) {
+        return
+      }
+      this.loading = true
+      this.page++
+      let gender = this.gender > 0 ? this.gender - 1 : ''
+      let startTime = this.startTime
+      let endTime = this.endTime
+      let data = {gender,startTime,endTime,page:this.page,size:this.size}
+      getDataList(data).then(res=>{
+        wx.hideLoading()
+        this.noMore = res.data.list && res.data.list.length < this.size ||!res.data.list ? true :false
+        this.loading = false
+        if(res.code===0){
+          this.list = this.list.concat(res.data.list)
+        }else{
+          this.showError(res.msg)
+        }
+      })
+    },
+    showError(title){
+       wx.showToast({ title, duration: 1000, icon: 'none' })
+    },
+    getData(){
+      this.total = 0
+      wx.showLoading({ title: '加载中' })
+      let gender = this.gender > 0 ? this.gender - 1 : ''
+      let startTime = this.startTime
+      let endTime = this.endTime
+      let data = {gender,startTime,endTime,page:this.page,size:this.size}
+      getDataList(data).then(res=>{
+        wx.hideLoading()
+        this.noMore = res.data.list && res.data.list.length < this.size ||!res.data.list ? true :false
+        if(res.code===0){
+          this.total = res.data.count
+          this.list = res.data.list
+        }else{
+          this.showError(res.msg)
+        }
+      })
+    },
     jump(id){
-      wx.navigateTo({url:'/pages/logs/detail?id='+id})
+      if(wx.getStorageSync('permissions')==1){
+        wx.navigateTo({url:'/pages/logs/detail?id='+id})
+      }else{
+        this.showError('你没有查看权限')
+      }
     },
     ageChange(e){
       this.ageIndex = ''
@@ -439,11 +146,15 @@ export default {
       this.ageIndex = arr.split(',')
       this.ageIndex[0] > this.ageIndex[1] ? this.ageIndex[1] = this.ageIndex[0] : ''
       this.age = this.ageList[0][this.ageIndex[0]] +  ' ~ ' + this.ageList[1][this.ageIndex[1]]
+      this.startTime = this.ageList[0][this.ageIndex[0]]
+      this.endTime = this.ageList[1][this.ageIndex[1]]
+      this.getData()
     },
     genderPickerChange(e){
       let index = e.mp.detail.value
       this.gender = index
       this.genderName = this.genderList[index]
+      this.getData()
     },
     previewImage(img,imgs){
       imgs = imgs.map(item=>{return item.photo})
@@ -538,6 +249,26 @@ export default {
         justify-content: center;
         color: red;
       }
+    }
+  }
+  .loading {
+    height: 70rpx;
+    text-align: center;
+    line-height: 70rpx;
+  }
+  .gary-font {
+    color: $gary-font;
+  }
+   .re-nodata {
+    text-align: center;
+    > div {
+      color: $gary-font;
+    }
+    .repair-nodata {
+      width: 388rpx;
+      height: 298rpx;
+      margin: 200rpx auto;
+      margin-bottom: 50rpx;
     }
   }
 }
