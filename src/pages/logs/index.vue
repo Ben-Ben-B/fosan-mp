@@ -16,6 +16,7 @@
                   </picker>
               </span>
           </div>
+          <div class='total'>共有{{total}}条数据</div>
     </div>
     <div class="re-nodata" v-if="noMore&&!list.length">
       <image src="/static/images/no-data.png" class="repair-nodata"></image>
@@ -171,10 +172,15 @@ export default {
 @import '../../styles/config';
 .logs {
   padding: 30rpx;
-  padding-top: 108rpx;
+  padding-top: 158rpx;
   background-color: #f7f7f7;
   min-height: 100vh;
   box-sizing: border-box;
+  .total{
+    height:50rpx;
+    line-height:50rpx;
+    padding-left: 30rpx;
+  }
    .com-fix{
        width: 100%;
        box-sizing: border-box;
