@@ -7,10 +7,10 @@
             placeholder-style="color: #B2B2B2" required />
         </view>
         <view class="input-cont">
-          <input type="text" :maxlength="11" placeholder="请输入密码" v-model="passworld" placeholder-style="color: #B2B2B2" required />
+          <input type="text" :maxlength="11" placeholder="请输入密码" v-model="password" placeholder-style="color: #B2B2B2" required />
         </view>
         <view>
-          <button open-type="getUserInfo" lang="zh_CN" size="32rpx" class="next-button" :class="name&&passworld? 'allow-btn':''" @getuserinfo="onGotUserInfo">登陆</button>
+          <button open-type="getUserInfo" lang="zh_CN" size="32rpx" class="next-button" :class="name&&password? 'allow-btn':''" @getuserinfo="onGotUserInfo">授权登录</button>
         </view>
       </form>
       <div>此数据仅供学习使用，不能用作其他用途，后果自负，初始账号为<span class="text-world">Ben</span>,密码为<span class="text-world">123456</span>，如果不正确，请联系管理员，谢谢</div>
@@ -24,7 +24,7 @@ export default {
   data() {
     return {
       name:'',
-      passworld:'',
+      password:'',
      isAllowBtn:false
     }
   },
@@ -40,18 +40,20 @@ export default {
          this.showError('请填写账号')
          return
        }
-       if(!this.passworld){
+       if(!this.password){
          this.showError('请填写密码')
          return
        }
        if(nickName){ 
-         login({name:this.name,passworld:this.passworld}).then(res=>{
-           console.log(res.msg)
+         login({name:this.name,password:this.password}).then(res=>{
+           console.log(res,e.mp.detail)
            if(res.code===0){
-            //  wx.setStorageSync('createTime',+new Date())
-            //  wx.navigateTo({url:'/pages/logs/index'})
+             wx.setStorageSync('createTime',+new Date())
+             wx.setStorageSync('permissions',res.data.permissions)
+             wx.setStorageSync('token',res.data.token)
+             wx.navigateTo({url:'/pages/logs/index'})
            }else{
-            //  this.showError(res.msg)
+             this.showError(res.msg)
            }
          })
          

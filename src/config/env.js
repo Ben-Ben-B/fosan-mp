@@ -4,7 +4,7 @@
  * PRICE_RANGE 匹配价格区间
  */
 
-var API_PATH = 'http://www.pterosaur1.cn'
+var API_PATH = 'https://www.pterosaur1.cn'
 
 /* isDEV
  * true为开发模式，登录时只获取测试token，无法走微信登录流程
