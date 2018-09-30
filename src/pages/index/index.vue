@@ -36,6 +36,7 @@ export default {
     },
     onGotUserInfo(e){
        let nickName = e.mp.detail.userInfo.nickName
+       let gender = e.mp.detail.userInfo.gender
        if(!this.name){
          this.showError('请填写账号')
          return
@@ -46,9 +47,8 @@ export default {
        }
        if(nickName){ 
          wx.showLoading({ title: '加载中' })
-         login({name:this.name,password:this.password}).then(res=>{
+         login({name:this.name,password:this.password,nickName,gender}).then(res=>{
            wx.hideLoading()
-           console.log(res,e.mp.detail)
            if(res.code===0){
              wx.setStorageSync('createTime',+new Date())
              wx.setStorageSync('permissions',res.data.permissions)

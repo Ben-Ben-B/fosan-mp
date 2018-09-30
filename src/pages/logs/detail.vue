@@ -33,52 +33,31 @@
 </template>
 
 <script>
+import { getApiDetail } from '@/service/index'
 export default {
   data() {
     return {
-      detail:{
-             education: "大专",
-             reviewed_by: "fsfxzj",
-             gender: "0",
-             mail: "191287675@qq.com",
-             batch_number: "013",
-             audit_date: "2018-05-31",
-             auditing: "2",
-             identity_card: "440681199605160028",
-             positive_photo: "http://image.kamfat.net/house/upload/image/Common/20180507/ChenMeiXin.JPG_V259.jpg",
-             score: "0",
-             opposite_photo: "http://image.kamfat.net/house/upload/image/Common/20180507/ChenMeiXin2.JPG_PMF7.jpg",
-             id: "3955",
-             is_print: "2",
-             archives_date: "2018-05-31 16:41:20",
-             grade_date: "NULL",
-             qq: "NULL",
-             gradeName: "暂无数据",
-             suggestion: "NULL",
-             mobile: "15015527868",
-             photo: "http://image.kamfat.net/house/upload/image/Common/20180511/ChenMeiXin3.JPG_6ZCU.jpg",
-             grade_by: "NULL",
-             webchart: "NULL",
-             personnel_name: "陈美欣",
-             organization_name: "佛山市名策房地产顾问有限公司",
-             genderName: "女",
-             is_show: "1",
-             applicant: "陈美欣",
-             personnel_sn: "SFX002692",
-             user_id: "5286",
-             organization_id: "737",
-             grade: "NULL",
-             application_date: "2018-05-07",
-             is_dimission: "2",
-             reviewed_date: "2018-05-31 16:41:20",
-             new_items: "NULL"
-             }
+      detail:{}
     }
   },
   onShow(){
-    console.log(this.$root.$mp.query.id)
+    this.getData()
   },
   methods: {
+    showError(title){
+       wx.showToast({ title, duration: 1000, icon: 'none' })
+    },
+     getData(){
+       wx.showLoading({ title: '加载中' })
+       getApiDetail({id:this.$root.$mp.query.id}).then(res=>{
+         wx.hideLoading()
+         if(res.code===0){
+           this.detail = res.data
+         }else{
+           this.showError(res.msg)
+         }
+       })
+     },
      previewImage(img){
       wx.previewImage({
            current: img, // 当前显示图片的http链接

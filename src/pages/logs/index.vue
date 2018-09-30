@@ -28,10 +28,10 @@
       <div class="introduce">
         <div>
           <div class="text">姓名：{{item.personnel_name}}</div>
-          <div class="text">年龄：*****</div>
+          <div class="text">年龄：{{item.age}}</div>
           <div class="text">性别：{{item.genderName}}</div>
           <div class="text">学历：{{item.education}}</div>
-          <div class="text">手机：1501****868</div>
+          <div class="text">手机：***********</div>
         </div >
         <div class='jump' @click="jump(item.id)">
           跳转详情
