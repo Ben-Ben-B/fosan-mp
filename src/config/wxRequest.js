@@ -14,6 +14,13 @@ export default async (url, params, method) => {
           wx.clearStorage()
           wx.reLaunch({url:'/pages/index/index'})
         } 
+        if (data.code === 120007) {
+          wx.setStorageSync('createTime',+new Date())
+          wx.setStorageSync('permissions',data.data.permissions)
+          wx.setStorageSync('token',data.data.token)
+          let url = data.data.jump_path == 1 ? '/pages/logs/index' : '/pages/myFriends/index' 
+          wx.reLaunch({url})
+        } 
         resolve(data)
 
       },

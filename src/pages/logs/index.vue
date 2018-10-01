@@ -21,7 +21,7 @@
     <div class="re-nodata" v-if="noMore&&!list.length">
       <image src="/static/images/no-data.png" class="repair-nodata"></image>
       <div>暂无数据</div>
-     </div>
+    </div>
     <div class="list" v-for="item in list" :key="item.id">
       <div @click="previewImage(item.photo,list)" class="photo">
         <image :src="item.photo"></image>

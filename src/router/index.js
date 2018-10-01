@@ -23,5 +23,19 @@ module.exports = [
         config: {
             "navigationBarTitleText": "example"
         }
+    },
+    {
+        path: "pages/myFriends/index",
+        config: {
+            "navigationBarTitleText": "我的朋友圈",
+            "onReachBottomDistance":50,
+            "enablePullDownRefresh": true
+        }
+    },
+    {
+        path: "pages/myFriends/detail",
+        config: {
+            "navigationBarTitleText": "朋友介绍"
+        }
     }
 ]

@@ -53,7 +53,8 @@ export default {
              wx.setStorageSync('createTime',+new Date())
              wx.setStorageSync('permissions',res.data.permissions)
              wx.setStorageSync('token',res.data.token)
-             wx.redirectTo({url:'/pages/logs/index'})
+             let url = res.data.jump_path == 1 ? '/pages/logs/index' : '/pages/myFriends/index' 
+             wx.redirectTo({url})
            }else{
              this.showError(res.msg)
            }

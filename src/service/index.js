@@ -10,3 +10,11 @@ export const getDataList = (obj) => wxRequest(API_PATH + '/api/list', obj, 'GET'
 
 // 详情页
 export const getApiDetail = (obj) => wxRequest(API_PATH + '/api/detail', obj, 'GET')
+
+//我的朋友圈
+
+// 列表页
+export const getMyfriList = (obj) => wxRequest(API_PATH + '/api/myfri/list', obj, 'GET')
+
+// 详情页
+export const getMyfriDetail = (obj) => wxRequest(API_PATH + '/api/myfri/detail', obj, 'GET')
